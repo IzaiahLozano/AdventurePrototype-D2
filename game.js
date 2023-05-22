@@ -1,4 +1,4 @@
-class ProductionIntro extends Phaser.scene {
+class ProductionIntro extends Phaser.Scene {
     constructor() {
         super('Production_intro');
     }
@@ -103,8 +103,19 @@ class ProductionIntro extends Phaser.scene {
             this.cameras.main.fadeOut(2000, 0,0,0);
         });
         //this.input.on('pointerdown', () => theme.stop);
-        this.input.on('pointerdown', () => this.scene.start('Story'));
+        //this.input.on('pointerdown', () => this.scene.start('Story'));
     }
 
 
 }
+
+const game = new Phaser.Game({
+    scale: {
+        mode: Phaser.Scale.FIT,
+        autoCenter: Phaser.Scale.CENTER_BOTH,
+        width: 1920,
+        height: 1080
+    },
+    scene: [ProductionIntro],
+    title: "Adventure Game",
+});
