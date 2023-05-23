@@ -449,9 +449,11 @@ class Garage extends AdventureScene {
                     y: `-=${2 * this.s}`,
                     alpha: { from: 1, to: 0 },
                     duration: 500,
-                    onComplete: () => pc.destroy()
+                    onComplete: () => pc.destroy(), 
+                    //onComplete: () => pc.setVisible(false),
                 });
             });
+            this.cleanup(['Paper clip', pc]);
 
             let screw = this.add.image(
                 1375,//x
@@ -491,9 +493,13 @@ class Garage extends AdventureScene {
                     y: `-=${2 * this.s}`,
                     alpha: { from: 1, to: 0 },
                     duration: 500,
-                    onComplete: () => screw.destroy()
+                    onComplete: () => screw.destroy(),
+                    //onComplete: () => screw.setVisible(false),
                 });
             });
+            this.cleanup(['Flathead Screwdriver', screw]);
+
+            
 
 
         let stair = this.add.rectangle(100, 275, 300, 700, 0xffffff);
@@ -609,7 +615,7 @@ class Stairs extends AdventureScene {
                         scaleY: 1,
                         duration: 200
                     });
-                    if (this.hasItem("Flathead Scredriver") && this.hasItem("Paper clip")) {
+                    if (this.hasItem("Flathead Screwdriver") && this.hasItem("Paper clip")) {
                         this.showMessage("Let's hope I still know how to do this.");
                     } else {
                         this.showMessage("It's locked. I needa find something to pick it with.");
@@ -627,8 +633,12 @@ class Stairs extends AdventureScene {
     
     
             door.on('pointerdown', () => {
-                this.showMessage("This is my chance!");
-                this.gotoScene('garage');
+                if (this.hasItem("Flathead Screwdriver") && this.hasItem("Paper clip")) {
+                    this.loseItem("Paper clip");
+                    this.showMessage("*squeak*");
+                    //door.setText("🚪 unlocked door");
+                    this.gotoScene('live');
+                }
             });
 
     }
@@ -639,6 +649,368 @@ class Stairs extends AdventureScene {
 }
 
 
+
+
+class Livingroom extends AdventureScene {
+    constructor() {
+        super('live');
+    }
+
+    preload(){
+        this.load.path = './assets/';
+        this.load.image('lr', 'Living-room.jpg');
+        this.load.image('player', 'guy.png');
+        this.load.image('knob', 'Knob.png');
+    }
+
+
+    onEnter() {
+        const plains = this.add.image(0, 0, 'lr');
+        plains.setScale(.75);
+        plains.setOrigin(0);
+        plains.setDepth(-1);
+
+        let guy = this.add.image(
+            1200,
+            840,
+            'player'
+            );
+            guy.setScale(.5);
+
+            let originalY = 840;
+            guy.setInteractive()
+            .setOrigin(0.5,0.5)
+            .on('pointerdown', () => {
+                this.showMessage("The cat looks so peaceful sleeping.");
+                this.add.tween({
+                    targets: guy,
+                    y: '-=' + this.s, 
+                    yoyo: true,
+                    ease: 'Sine.inOut',
+                    duration: 100,
+                    onComplete: function () {
+                      guy.y = originalY; // Reset the y position to the original value
+                    }
+                  });
+            });
+
+
+
+
+
+            let cat = this.add.circle(675, 440, 16, 0xffffff);
+
+            cat.setInteractive()
+            .on('pointerover', () => {
+                this.showMessage("How could someone so cruel own a cute pet like you?");
+
+        });
+
+
+
+
+        let door = this.add.image(
+            1335,//x
+            178,//y
+            'knob',//studioname
+        )
+        door.setScale(0.5);
+            
+
+        door.setInteractive()
+            .setOrigin(0.5,0.5)
+            .on('pointerover', () => {
+                this.showMessage("Finally, the exit, I can escape!");
+                this.tweens.add({
+                    targets: door,
+                    scaleX: 1.5,
+                    scaleY: 1.5,
+                    duration: 200
+                });
+            });
+
+        door.on('pointerout', () => {
+            this.tweens.add({
+                targets: door,
+                scaleX: .5,
+                scaleY: .5,
+                duration: 200
+            });
+        });
+
+
+        door.on('pointerdown', () => {
+            this.showMessage("This is my chance!");
+            this.gotoScene('goodend');
+        });
+
+
+        let stair = this.add.rectangle(870, 50, 150, 700, 0xffffff);
+        stair.setAlpha(.01);
+        stair.setAngle(-53)
+
+
+        stair.setInteractive()
+                .setOrigin(0.5,0.5)
+                .on('pointerover', () => {
+                    this.showMessage("Maybe there's a phone up there I can use.");
+                    
+                });
+    
+            stair.on('pointerdown', () => {
+                this.showMessage("Let's see what happens.");
+                this.gotoScene('bedroom');
+            });
+
+
+
+
+
+        }
+
+    }
+
+
+
+
+class Bedroom extends AdventureScene {
+    constructor() {
+        super('bedroom');
+    }
+
+    preload(){
+        this.load.path = './assets/';
+        this.load.image('br', 'Bedroom.jpg');
+        this.load.image('player', 'guy.png');
+        this.load.image('knob', 'Knob.png');
+        this.load.image('cl', 'Clothes.png');
+        this.load.image('Phone', 'Phone.png');
+    }
+
+
+    onEnter() {
+        const plains = this.add.image(0, 0, 'br');
+        plains.setScale(.75);
+        plains.setOrigin(0);
+        plains.setDepth(-1);
+
+        let guy = this.add.image(
+            1200,
+            840,
+            'player'
+            );
+            guy.setScale(.5);
+
+            let originalY = 840;
+            guy.setInteractive()
+            .setOrigin(0.5,0.5)
+            .on('pointerdown', () => {
+                this.showMessage("Just wait until I get the police here punk.");
+                this.add.tween({
+                    targets: guy,
+                    y: '-=' + this.s, 
+                    yoyo: true,
+                    ease: 'Sine.inOut',
+                    duration: 100,
+                    onComplete: function () {
+                      guy.y = originalY; // Reset the y position to the original value
+                    }
+                  });
+            });
+
+
+            let bed = this.add.circle(190, 460, 45, 0xED1C24);
+
+            bed.setInteractive()
+            .on('pointerover', () => {
+                this.showMessage("*Zzz Zzz*");
+
+        });
+
+
+
+       
+
+        let fit = this.add.image(
+            700,//x
+            500,//y
+            'cl',//studioname
+        )
+        fit.setScale(.13);
+
+
+        fit.setInteractive()
+            .setOrigin(0.5,0.5)
+            .on('pointerover', () => {
+                this.showMessage("I could use a change of clothes.");
+                
+            });
+
+
+        fit.on('pointerdown', () => {
+            this.showMessage("Mine now");
+            this.gainItem('New Clothes');
+            this.tweens.add({
+                targets: fit,
+                y: `-=${2 * this.s}`,
+                alpha: { from: 1, to: 0 },
+                duration: 500,
+                onComplete: () => fit.destroy(),
+            });
+        });
+        this.cleanup(['pointerdown', fit]);
+
+
+
+        let phone = this.add.image(
+            50,//x
+            600,//y
+            'Phone',//studioname
+        )
+        phone.setScale(.03);
+        phone.setAngle(-80)
+
+
+        phone.setInteractive()
+            .setOrigin(0.5,0.5)
+            .on('pointerover', () => {
+                this.showMessage("My phone! I needa call the police now.");
+                
+            });
+
+
+        phone.on('pointerdown', () => {
+            this.gotoScene('badend');
+        });
+
+
+
+
+        let door = this.add.image(
+            1290,//x
+            595,//y
+            'knob',//studioname
+        )
+        door.setScale(0.8);
+            
+
+        door.setInteractive()
+            .setOrigin(0.5,0.5)
+            .on('pointerover', () => {
+                this.showMessage("There's no time I need to leave now!");
+                this.tweens.add({
+                    targets: door,
+                    scaleX: 1.5,
+                    scaleY: 1.5,
+                    duration: 200
+                });
+            });
+
+        door.on('pointerout', () => {
+            this.tweens.add({
+                targets: door,
+                scaleX: .8,
+                scaleY: .8,
+                duration: 200
+            });
+        });
+
+
+        door.on('pointerdown', () => {
+            this.showMessage("I'm outta here!");
+            this.gotoScene('live');
+        });
+        
+
+
+        }
+
+    
+}
+
+
+
+class Badend extends AdventureScene {
+    constructor() {
+        super('badend');
+    }
+
+
+    preload(){
+        this.load.path = './assets/';
+        this.load.image('be', 'Badend.jpg');
+    }
+
+
+    create() {
+
+        this.cameras.main.setBackgroundColor('#fffff1');
+
+        //create image object 
+        let bm = this.add.image(
+            960,//x
+            540,//y
+            'be',//studioname
+        )
+        bm.setScale(1) //resize
+
+        this.tweens.add({
+            targets: bm,
+            alpha: {start: 0, to: 1},
+            duration: 4000,
+
+
+        });
+
+    }
+
+
+
+
+}
+
+
+
+
+class Goodend extends AdventureScene {
+    constructor() {
+        super('goodend');
+    }
+
+
+    preload(){
+        this.load.path = './assets/';
+        this.load.image('ge', 'goodend.jpg');
+    }
+
+
+    create() {
+
+        this.cameras.main.setBackgroundColor('#fffff1');
+
+        //create image object 
+        let gm = this.add.image(
+            960,//x
+            540,//y
+            'ge',//studioname
+        )
+        bm.setScale(1) //resize
+
+        this.tweens.add({
+            targets: gm,
+            alpha: {start: 0, to: 1},
+            duration: 4000,
+
+
+        });
+
+    }
+
+
+
+
+}
+
 const game = new Phaser.Game({
     scale: {
         mode: Phaser.Scale.FIT,
@@ -646,7 +1018,8 @@ const game = new Phaser.Game({
         width: 1920,
         height: 1080
     },
-    scene: [Garage, Stairs],//[ProductionIntro, Room1, Garage],
+    scene: [ProductionIntro, Room1, Garage, Stairs, Livingroom, Bedroom, Badend, Goodend],
     title: "Adventure Game",
 });
+
 
